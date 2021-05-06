@@ -154,6 +154,7 @@ class Slapd:
         root_pw="password",
         datadir_prefix=None,
         debug=None,
+        configuration_template=None,
     ):
         self.logger = combinedlogger("python-ldap-test", log_level=log_level)
         self.schemas = schemas or ("core.ldif",)
@@ -163,6 +164,7 @@ class Slapd:
         self.root_cn = root_cn
         self.root_pw = root_pw
         self.host = host or "127.0.0.1"
+        self.configuration_template = configuration_template or SLAPD_CONF_TEMPLATE
 
         self._proc = None
         self.port = port or self._avail_tcpport()
@@ -301,7 +303,7 @@ class Slapd:
             "servercert": self.servercert,
             "serverkey": self.serverkey,
         }
-        return SLAPD_CONF_TEMPLATE % config_dict
+        return self.configuration_template % config_dict
 
     def _write_config(self):
         """Loads the slapd.d configuration."""
